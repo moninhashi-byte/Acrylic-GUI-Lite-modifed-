@@ -1,0 +1,5 @@
+{
+  "name": "Acrylic GUI Lite (modifed)",
+  "description": "A simplified web-based interface for managing in-game enhancements, focusing on Fruit ESP and Auto Leveling features. This tool provides a clean and modern UI for toggling specific functionalities, inspired by the Acrylic script.",
+  "requestFramePermissions": []
+}
