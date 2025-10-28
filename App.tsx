@@ -7,6 +7,7 @@ import { FRUITS, RARITY_COLORS } from './constants';
 import type { FruitEspState } from './types';
 import { NumberInput } from './components/NumberInput';
 import { Dropdown } from './components/Dropdown';
+import { LoaderCard } from './components/LoaderCard';
 
 const App: React.FC = () => {
   const initialFruitState = useMemo(() => {
@@ -126,6 +127,10 @@ const App: React.FC = () => {
               />
             </div>
           </Card>
+          
+          {/* Script Loader Card */}
+          <LoaderCard />
+
         </main>
         <Footer />
       </div>
