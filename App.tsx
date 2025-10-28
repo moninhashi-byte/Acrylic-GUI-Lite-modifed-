@@ -4,10 +4,19 @@ import { Footer } from './components/Footer';
 import { Card } from './components/Card';
 import { ToggleSwitch } from './components/ToggleSwitch';
 import { FRUITS, RARITY_COLORS } from './constants';
-import type { FruitEspState } from './types';
+import type { FruitEspState, Rarity } from './types';
 import { NumberInput } from './components/NumberInput';
 import { Dropdown } from './components/Dropdown';
 import { LoaderCard } from './components/LoaderCard';
+
+const RARITY_BUTTON_STYLES: { [key in Rarity]: string } = {
+  Common: 'border-gray-500 text-gray-300 hover:bg-gray-700/80',
+  Uncommon: 'border-green-600 text-green-400 hover:bg-green-500/20',
+  Rare: 'border-blue-600 text-blue-400 hover:bg-blue-500/20',
+  Legendary: 'border-purple-600 text-purple-400 hover:bg-purple-500/20',
+  Mythical: 'border-red-600 text-red-500 hover:bg-red-500/20',
+};
+
 
 const App: React.FC = () => {
   const initialFruitState = useMemo(() => {
@@ -44,6 +53,21 @@ const App: React.FC = () => {
     }));
   };
 
+  const handleSelectByRarity = (rarity: Rarity) => {
+    const updatedFruits = { ...fruitEspState.fruits };
+    FRUITS.forEach(fruit => {
+      if (fruit.rarity === rarity) {
+        updatedFruits[fruit.name] = true;
+      }
+    });
+    setFruitEspState(prevState => ({ ...prevState, fruits: updatedFruits }));
+  };
+
+  const handleClearAllFruits = () => {
+    setFruitEspState(prevState => ({ ...prevState, fruits: initialFruitState }));
+  };
+
+
   const handleAutoLevelToggle = (enabled: boolean) => {
     setAutoLevelEnabled(enabled);
   };
@@ -75,6 +99,28 @@ const App: React.FC = () => {
             <p className="text-sm text-slate-400 mb-4">
               Displays the location of fruits on the map. Toggle individual fruits you want to find.
             </p>
+
+            <div className={`flex flex-wrap items-center gap-2 mb-4 transition-opacity duration-300 ${
+                !fruitEspState.masterEnabled ? 'opacity-50 pointer-events-none' : 'opacity-100'
+              }`}>
+              <span className="text-xs font-semibold text-slate-400 mr-2">Select:</span>
+              {(Object.keys(RARITY_COLORS) as Rarity[]).map((rarity) => (
+                <button
+                  key={rarity}
+                  onClick={() => handleSelectByRarity(rarity)}
+                  className={`px-2 py-1 text-xs font-medium border rounded-full transition-colors duration-200 ${RARITY_BUTTON_STYLES[rarity]}`}
+                >
+                  {rarity}
+                </button>
+              ))}
+              <button
+                onClick={handleClearAllFruits}
+                className="px-2 py-1 text-xs font-medium border border-slate-600 text-slate-400 rounded-full hover:bg-slate-700 transition-colors duration-200"
+              >
+                Clear All
+              </button>
+            </div>
+
             <div
               className={`grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 transition-opacity duration-300 ${
                 !fruitEspState.masterEnabled ? 'opacity-50 pointer-events-none' : 'opacity-100'
@@ -129,7 +175,12 @@ const App: React.FC = () => {
           </Card>
           
           {/* Script Loader Card */}
-          <LoaderCard />
+          <LoaderCard
+            fruitEspState={fruitEspState}
+            autoLevelEnabled={autoLevelEnabled}
+            targetLevel={targetLevel}
+            levelingMethod={levelingMethod}
+          />
 
         </main>
         <Footer />
